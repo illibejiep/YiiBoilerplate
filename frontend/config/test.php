@@ -2,21 +2,29 @@
 /**
  * test.php
  *
- * configuration file for frontend testing
+ * configuration file for testing
+ *
+ * @author: antonio ramirez <antonio@clevertech.biz>
+ * Date: 7/24/12
+ * Time: 8:08 AM
  */
 return CMap::mergeArray(
-	require(__DIR__ . '/main.php'),
+	require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'main.php'),
 	array(
 		'components' => array(
 			'fixture' => array(
 				'class' => 'system.test.CDbFixtureManager'
 			),
-			// Put correct test DB credentials here
-			'db' => array(
-				'connectionString' => 'mysql:host=127.0.0.1;dbname=yiibp_test',
-				'username' => 'test-db-user',
-				'password' => 'test-db-password',
+			/* uncomment if we require to run commands against test database */
+			/*
+			 'db' => array(
+				'connectionString' => $params['testdb.connectionString'],
+				'username' => $params['testdb.username'],
+				'password' => $params['testdb.password'],
+				'charset' => 'utf8'
 			),
+			*/
+
 		)
 	)
 );

@@ -1,41 +1,46 @@
 <?php
-/**
- * main.php
- *
- * Common configuration file for backend, console and frontend applications
- */
-Yii::setPathOfAlias('root', __DIR__ . '/../..');
-Yii::setPathOfAlias('common', __DIR__ . '/../../common');
+$commonConfigDir = dirname(__FILE__);
+$root = realpath($commonConfigDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
 
-return CMap::mergeArray(
-	array(
-		'import' => array(
-			'common.components.*',
-			'common.models.*',
-		),
-		'components' => array(
-			'db' => array(
-				'schemaCachingDuration' => YII_DEBUG ? 0 : 86400000, // 1000 days
-				'enableParamLogging' => YII_DEBUG,
-				'charset' => 'utf8'
-			),
-			'urlManager' => array(
-				'urlFormat' => 'path',
-				'showScriptName' => false,
-				'urlSuffix' => '/',
-			),
-			'cache' => extension_loaded('apc') ?
-				array(
-					'class' => 'CApcCache',
-				) :
-				array(
-					'class' => 'CDbCache',
-					'connectionID' => 'db',
-					'autoCreateCacheTable' => true,
-					'cacheTableName' => 'cache',
-				),
-		)
-	),
-	(file_exists(__DIR__ . '/main-env.php') ? require(__DIR__ . '/main-env.php') : array()),
-	(file_exists(__DIR__ . '/main-local.php') ? require(__DIR__ . '/main-local.php') : array())
+$config = array(
+    'import' => array(
+        'common.components.*',
+        'common.models.*',
+    ),
+    'components' => array(
+        'db' => array(
+            'schemaCachingDuration' => YII_DEBUG ? 0 : 86400000, // 1000 days
+            'enableParamLogging' => YII_DEBUG,
+            'charset' => 'utf8'
+        ),
+        'urlManager' => array(
+            'urlFormat' => 'path',
+            'showScriptName' => false,
+            'urlSuffix' => '/',
+        ),
+        'cache' => extension_loaded('apc') ?
+            array(
+                'class' => 'CApcCache',
+            ) :
+            array(
+                'class' => 'CDbCache',
+                'connectionID' => 'db',
+                'autoCreateCacheTable' => true,
+                'cacheTableName' => 'cache',
+            ),
+    )
 );
+
+require($commonConfigDir . DIRECTORY_SEPARATOR . 'main-env.php');
+
+require($commonConfigDir . DIRECTORY_SEPARATOR . 'main-local.php');
+
+require_once($root. DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Yii' . DIRECTORY_SEPARATOR . 'yii.php');
+
+Yii::setPathOfAlias('root', $root);
+Yii::setPathOfAlias('common', $root. DIRECTORY_SEPARATOR . 'common');
+Yii::setPathOfAlias('console', $root. DIRECTORY_SEPARATOR . 'console');
+Yii::setPathOfAlias('backend', $root. DIRECTORY_SEPARATOR . 'backend');
+Yii::setPathOfAlias('frontend', $root. DIRECTORY_SEPARATOR . 'frontend');
+
+return $config;

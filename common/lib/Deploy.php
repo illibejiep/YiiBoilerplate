@@ -19,7 +19,7 @@ class Deploy
 		'/backend/config'
 	);
 	private $environments = array(
-		'private',
+		'dev',
 		'prod'
 	);
 
@@ -137,6 +137,12 @@ class Deploy
 			} else {
 				Console::output("%wNot found:%n\t{$source}");
 			}
+
+            $localConf = $this->root.$dir.'/main-local.php';
+            if(!file_exists($localConf)) {
+                file_put_contents($localConf,'<?php'.PHP_EOL);
+                Console::output("%gCreate:%n\t\t{$dir}/main-local.php");
+            }
 		}
 		Console::output("");
 	}
