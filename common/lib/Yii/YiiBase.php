@@ -127,7 +127,7 @@ class YiiBase
 
 	/**
 	 * Returns the application singleton or null if the singleton has not been created yet.
-	 * @return CApplication the application singleton, null if the singleton has not been created yet.
+	 * @return CApplication|CWebApplication the application singleton, null if the singleton has not been created yet.
 	 */
 	public static function app()
 	{
@@ -335,6 +335,7 @@ class YiiBase
 						unset(self::$_includePaths[$pos]);
 				}
 
+                array_unshift(self::$_includePaths,self::getCommonPath($path));
 				array_unshift(self::$_includePaths,$path);
 
 				if(self::$enableIncludePath && set_include_path('.'.PATH_SEPARATOR.implode(PATH_SEPARATOR,self::$_includePaths))===false)
@@ -357,21 +358,35 @@ class YiiBase
 	 */
 	public static function getPathOfAlias($alias)
 	{
+        $path = false;
 		if(isset(self::$_aliases[$alias]))
-			return self::$_aliases[$alias];
+			$path = self::$_aliases[$alias];
 		elseif(($pos=strpos($alias,'.'))!==false)
 		{
 			$rootAlias=substr($alias,0,$pos);
 			if(isset(self::$_aliases[$rootAlias]))
-				return self::$_aliases[$alias]=rtrim(self::$_aliases[$rootAlias].DIRECTORY_SEPARATOR.str_replace('.',DIRECTORY_SEPARATOR,substr($alias,$pos+1)),'*'.DIRECTORY_SEPARATOR);
+				$path = self::$_aliases[$alias]=rtrim(self::$_aliases[$rootAlias].DIRECTORY_SEPARATOR.str_replace('.',DIRECTORY_SEPARATOR,substr($alias,$pos+1)),'*'.DIRECTORY_SEPARATOR);
 			elseif(self::$_app instanceof CWebApplication)
 			{
 				if(self::$_app->findModule($rootAlias)!==null)
-					return self::getPathOfAlias($alias);
+					$path = self::getPathOfAlias($alias);
 			}
 		}
-		return false;
+
+        if ($path === false)
+            return false;
+
+        if (is_dir($path) || file_exists($path.'.php'))
+            return $path;
+        else
+            return self::getCommonPath($path);
 	}
+
+    public static function getCommonPath($path){
+        $appPath = realpath(self::getPathOfAlias('application'));
+        $commonAppPath = realpath(self::getPathOfAlias('common'));
+        return str_replace($appPath,$commonAppPath,$path);
+    }
 
 	/**
 	 * Create a path alias.
