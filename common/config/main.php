@@ -4,10 +4,67 @@ $root = realpath($commonConfigDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPAR
 
 $config = array(
     'import' => array(
-        'common.components.*',
-        'common.models.*',
+        'application.controllers.*',
+        'application.models.*',
+        'ext.mail.YiiMailMessage',
+        'ext.jquery-gmap.*',
+        'ext.image.*',
+        'ext.jcrop.*',
+        'application.modules.user.*',
+        'application.modules.user.models.*',
+        'application.modules.user.components.*',
+        'application.modules.user.controllers.*',
+        'application.modules.rights.*',
+        'application.modules.rights.models.*',
+        'application.modules.rights.components.*',
+        'application.modules.rights.controllers.*',
+        'ext.jwplayer.*',
+        'ext.ffmpeg-php.*',
+        'ext.ffmpeg-php.adapter.*',
+        'ext.ffmpeg-php.provider.*',
+    ),
+    'modules'=>array(
+        'user'=>array(
+            'tableUsers' => 'user',
+            # encrypting method (php hash function)
+            'hash' => 'md5',
+
+            # send activation email
+            'sendActivationMail' => true,
+
+            # allow access for non-activated users
+            'loginNotActiv' => false,
+
+            # activate user on registration (only sendActivationMail = false)
+            'activeAfterRegister' => false,
+
+            # automatically login from registration
+            'autoLogin' => true,
+
+            # registration path
+            'registrationUrl' => '/user/registration',
+
+            # recovery password path
+            'recoveryUrl' => '/user/recovery',
+
+            # login form path
+            'loginUrl' => '/user/login',
+
+            # page after login
+            'returnUrl' => '/user/profile',
+
+            # page after logout
+            'returnLogoutUrl' => '/user/login',
+        ),
+        'rights',
     ),
     'components' => array(
+        'user'=>array(
+            'class'=>'RWebUser',
+            // enable cookie-based authentication
+            'allowAutoLogin'=>true,
+            'loginUrl' => '/user/login',
+        ),
         'db' => array(
             'schemaCachingDuration' => YII_DEBUG ? 0 : 86400000, // 1000 days
             'enableParamLogging' => YII_DEBUG,
@@ -28,6 +85,53 @@ $config = array(
                 'autoCreateCacheTable' => true,
                 'cacheTableName' => 'cache',
             ),
+        'log'=>array(
+            'class'=>'CLogRouter',
+            'routes'=> array(
+                array(
+                    'class'=>'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+                    'ipFilters'=>array('127.0.0.1','213.33.168.66'),
+                ),
+                //array(
+                //   'class'=>'CWebLogRoute',
+                //   'levels'=>'info',
+                //   'showInFireBug'=>true,
+                //),
+            ),
+        ),
+        'file'=>array(
+            'class'=>'application.extensions.file.CFile',
+        ),
+        'mail' => array(
+            'class' => 'ext.mail.YiiMail',
+            'transportType' => 'php',
+            /*
+                        'transportType' => 'smtp',
+                        'transportOptions' => array(
+                            'host' => 'smtp.gmail.com',
+                            'username' => 'xxx@gmail.com',
+                            'password' => 'xxx',
+                            'port' => '465',
+                            'encryption'=>'tls',
+                        ),
+            */
+            'viewPath' => 'application.views.mail',
+            'logging' => true,
+            'dryRun' => false
+        ),
+        'curl' =>array(
+            'class' => 'ext.Curl',
+            'options'=>array(
+                CURLOPT_TIMEOUT => 90,
+            ),
+        ),
+        'image'=>array(
+            'class'=>'application.extensions.image.CImageComponent',
+            // GD or ImageMagick
+            'driver'=>'GD',
+            // ImageMagick setup path
+            //'params'=>array('directory'=>'D:/Program Files/ImageMagick-6.4.8-Q16'),
+        ),
     )
 );
 
