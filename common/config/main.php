@@ -66,8 +66,6 @@ $config = array(
             'loginUrl' => '/user/login',
         ),
         'db' => array(
-            'schemaCachingDuration' => YII_DEBUG ? 0 : 86400000, // 1000 days
-            'enableParamLogging' => YII_DEBUG,
             'charset' => 'utf8'
         ),
         'urlManager' => array(
@@ -90,7 +88,7 @@ $config = array(
             'routes'=> array(
                 array(
                     'class'=>'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
-                    'ipFilters'=>array('127.0.0.1','213.33.168.66'),
+                    'ipFilters'=>array('127.0.0.1'),
                 ),
                 //array(
                 //   'class'=>'CWebLogRoute',

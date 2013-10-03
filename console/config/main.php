@@ -3,6 +3,7 @@
 $consoleConfigDir = dirname(__FILE__);
 $root = $consoleConfigDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
 $commonFile = $root . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.php';
+
 $config = require($commonFile);
 
 $config = CMap::mergeArray(
