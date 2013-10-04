@@ -18,7 +18,7 @@ $config = CMap::mergeArray(
         // @see http://www.yiiframework.com/doc/api/1.1/CApplication#language-detail
         'language' => 'en',
         // uncomment if a theme is used
-        /*'theme' => '',*/
+        'theme' => 'default',
         // setup import paths aliases
         // @see http://www.yiiframework.com/doc/api/1.1/YiiBase#import-detail
         'import' => array(
@@ -44,7 +44,11 @@ $config = CMap::mergeArray(
                     '<controller:\w+>/<id:\d+>' => '<controller>/view',
                     '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                     '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                    PIX_URI.'/resize/<id1:\d+>/<id2:\d+>/<width:\d+>x<height:\d+>.<type:\w+>' => 'picture/resize'
                 )
+            ),
+            'themeManager' => array(
+                'basePath' => Yii::getPathOfAlias('root.frontend.themes'),
             ),
         ),
     )
