@@ -1,0 +1,6 @@
+<?
+
+class VideoController extends CRUDController
+{
+
+}

@@ -1,0 +1,6 @@
+<?
+
+class UserOauthController extends CRUDController
+{
+
+}
