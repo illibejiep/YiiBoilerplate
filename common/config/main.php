@@ -2,10 +2,25 @@
 $commonConfigDir = dirname(__FILE__);
 $root = realpath($commonConfigDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
 
+define('TMP_PATH','/tmp');
+define('PIX_PATH',$root . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'pix');
+define('VIDEO_PATH',$root . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'video');
+
+define('PIX_URI','/pix');
+define('VIDEO_URI','/video');
+
+
 $config = array(
+    'params' => array(
+        'frontendUrl' => 'http://yii.local',
+        'backendUrl'  => 'https://yii.local',
+    ),
     'import' => array(
+        'common.components.interfaces.*',
         'application.controllers.*',
         'application.models.*',
+        'application.models._base.*',
+        'application.models.enum.*',
         'ext.mail.YiiMailMessage',
         'ext.jquery-gmap.*',
         'ext.image.*',
@@ -56,7 +71,10 @@ $config = array(
             # page after logout
             'returnLogoutUrl' => '/user/login',
         ),
-        'rights',
+        'rights'=>array(
+            'appLayout' => '//main',
+//            'install'=>true,
+        ),
     ),
     'components' => array(
         'user'=>array(
@@ -64,6 +82,10 @@ $config = array(
             // enable cookie-based authentication
             'allowAutoLogin'=>true,
             'loginUrl' => '/user/login',
+        ),
+        'authManager'=>array(
+            'class'=>'RDbAuthManager',
+            'defaultRoles' => array('Guest')
         ),
         'db' => array(
             'charset' => 'utf8'

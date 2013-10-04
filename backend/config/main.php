@@ -30,26 +30,30 @@ $config = CMap::mergeArray(
             /* 'common.extensions.validators.*', */
             'application.components.*',
             'application.controllers.*',
-            'application.models.*'
+            'application.models.*',
+            'application.widgets.*',
+            'ext.jformvalidate.EHtml',
         ),
         /* uncomment and set if required */
         // @see http://www.yiiframework.com/doc/api/1.1/CModule#setModules-detail
-        /* 'modules' => array(
-            'gii' => array(
-                'class' => 'system.gii.GiiModule',
-                'password' => 'clevertech',
-                'generatorPaths' => array(
-                    'bootstrap.gii'
-                )
-            )
-        ), */
-        'components' => array(
-            'user' => array(
-                'allowAutoLogin'=>true,
+        'modules'=>array(
+            // uncomment the following to enable the Gii tool
+            'gii'=>array(
+                'class'=>'system.gii.GiiModule',
+                'password'=>'verySecretPassword',
+                'generatorPaths'=>array(
+                    'ext.giiy'
+                ),
+                // If removed, Gii defaults to localhost only. Edit carefully to taste.
+                'ipFilters'=>array('127.0.0.1','::1'),
+                'newFileMode'=>0666,
+                'newDirMode'=>0777,
             ),
+        ),
+        'components' => array(
             /* load bootstrap components */
             'bootstrap' => array(
-                'class' => 'common.extensions.bootstrap.components.Bootstrap',
+                'class' => 'ext.bootstrap.components.Bootstrap',
                 'responsiveCss' => true,
             ),
             'errorHandler' => array(
@@ -63,6 +67,25 @@ $config = CMap::mergeArray(
                     '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
                 )
             ),
+            'phpmessages' => array (
+                // Pending on core: http://code.google.com/p/yii/issues/detail?id=2624
+                'extensionBasePaths' => array(
+                    'giix' => 'ext.giix.messages', // giix messages directory.
+                ),
+            ),
+            'jformvalidate' => array (
+                'class' => 'ext.jformvalidate.EJFValidate',
+                'enable' => true
+            ),
+            'clientScript'=>array(
+                'packages' => array(
+                    'modelForm' => array(
+                        'basePath' => 'application.widgets.js',
+                        'js'=>array('modelForm.js'),
+                    )
+                ),
+            ),
+
         ),
     )
 );
