@@ -5,6 +5,7 @@ $root = $frontendConfigDir . '/../' . '..';
 $commonFile = $root . '/common/config/main.php';
 
 $config = require($commonFile);
+$eauthServices = require('eauth.php');
 
 $config = CMap::mergeArray(
     $config,
@@ -29,7 +30,12 @@ $config = CMap::mergeArray(
             /* 'common.extensions.validators.*', */
             'application.components.*',
             'application.controllers.*',
-            'application.models.*'
+            'application.models.*',
+            'ext.eoauth.*',
+            'ext.eoauth.lib.*',
+            'ext.lightopenid.*',
+            'ext.eauth.*',
+            'ext.eauth.services.*',
         ),
         /* uncomment and set if required */
         // @see http://www.yiiframework.com/doc/api/1.1/CModule#setModules-detail
@@ -49,6 +55,16 @@ $config = CMap::mergeArray(
             ),
             'themeManager' => array(
                 'basePath' => Yii::getPathOfAlias('root.frontend.themes'),
+            ),
+            'loid' => array(
+                'class' => 'ext.lightopenid.loid',
+            ),
+            'eauth' => array(
+                'class' => 'ext.eauth.EAuth',
+                'popup' => false, // Use the popup window instead of redirecting.
+                'cache' => false, // Cache component name or false to disable cache. Defaults to 'cache'.
+                'cacheExpire' => 0, // Cache lifetime. Defaults to 0 - means unlimited.
+                'services' => $eauthServices,
             ),
         ),
     )
