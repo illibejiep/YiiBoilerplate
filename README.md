@@ -115,3 +115,145 @@ ActiveRecord реализует интерфейс JsonSerializable. Для JSON
 
 Используемые модели наследуются от сгенерированных, чтобы их перегенерация не затирала имеющийся функционал.
 Если файла модели нет, то он создается автоматически. CRUD-генератор создает контроллеры, только если они отсутсвуют. Вьюхи делятся на базовые, которые перезаписываются генератором, и основные, которые создаются только при их отсутствии и подключают базовые файлы.
+
+### Как пощупать (потрогать).
+
+1. Скачиваем проект своим любимым способом в свою любимую папку для проектов.
+```
+    git clone https://github.com/profet9/YiiBoilerplate.git
+```
+2. Настраиваем свой вэб-сервер.
+
+3. Прописываем в конфиге свою базу данных и остальные параметры. Например так:
+
+```php
+// in common/config/main-local.php
+$config['components']['db'] = array(
+    'connectionString' => 'pgsql:host=localhost;dbname=yii',
+    'emulatePrepare' => false,
+    'username' => 'pgsql',
+    'charset' => 'utf8',
+    'enableParamLogging' => true,
+    'enableProfiling' => true,
+    'tablePrefix' => '',
+);
+unset($config['components']['db']['password']);
+
+$config['params'] = array(
+    'frontendUrl' => 'http://www.yii.local',
+    'backendUrl'  => 'http://admin.yii.local',
+);
+
+```
+
+
+4. Запускаем скрипт деплоя с нужным окружением.
+```
+    ./runpostdeploy dev
+```
+5. Теперь, если повезло, в бэкэнде можно заливать картинки и видео. А также прикреплять картинки в качестве превью к видео. В фронтэнде ничего интересного.
+
+6. Для примера сделаем каталог товаров.
+
+а. создадим миграции:
+```
+    ./yiic migrate create catalog
+```
+
+```php
+// in migration file
+public function safeUp()
+{
+    $this->createTable('catalog',array(
+        'id' => 'serial PRIMARY KEY', // for mysql 'integer AUTO_INCREMENT PRIMARY KEY'
+        'parent_id' => 'integer REFERENCES catalog ON UPDATE CASCADE ON DELETE CASCADE',
+        'picture_id' => 'integer REFERENCES picture ON UPDATE CASCADE ON DELETE SET NULL',
+        'name' => 'varchar',
+        'description' => 'text',
+    ));
+
+    $this->createIndex('catalog_parent_idx','catalog','parent_id');
+    $this->createIndex('catalog_picture_idx','catalog','picture_id');
+
+    $this->createTable('item', array(
+        'id' => 'serial PRIMARY KEY', // for mysql 'integer AUTO_INCREMENT PRIMARY KEY'
+        'catalog_id' => 'integer REFERENCES catalog ON UPDATE CASCADE ON DELETE SET NULL',
+        'picture_id' => 'integer REFERENCES picture ON UPDATE CASCADE ON DELETE SET NULL',
+        'name' => 'varchar',
+        'price' => 'float',
+        'description' => 'text',
+    ));
+
+    $this->createIndex('item_catalog_idx','item','catalog_id');
+    $this->createIndex('item_picture_idx','item','picture_id');
+}
+
+public function safeDown()
+{
+    $this->dropTable('item');
+    $this->dropTable('catalog');
+}
+
+```
+
+b. По адресу {backendUrl}/gii в разделе "GiiyModel Generator" генерим модели. Реализуем в моделях интерфейс Iillustrated
+
+```php
+
+// in common/models/Catalog.php
+class Catalog extends BaseCatalog implements Iillustrated
+{
+    /** @return Catalog */
+	public static function model($className=__CLASS__) {
+		return parent::model($className);
+	}
+
+    /** @return Picture|null */
+    public function getPicture()
+    {
+        return $this->getRelated('picture');
+    }
+
+}
+
+```
+
+```php
+
+// in common/models/Item.php
+class Item extends BaseItem implements Iillustrated
+{
+    /** @return Item */
+	public static function model($className=__CLASS__) {
+		return parent::model($className);
+	}
+
+    /** @return Picture|null */
+    public function getPicture()
+    {
+        return $this->getRelated('picture');
+    }
+}
+```
+
+И сгенерим CRUD-контроллеры в разделе "GiiyCrud Generator".
+
+c. Прописываем новые контроллеры в меню.
+
+```php
+
+//somewere in backend/view/main.php
+'items' => array(
+        array(
+            'class' => 'bootstrap.widgets.TbMenu',
+            'items' => array(
+                array('label' => 'Pictures', 'url' => array('/Picture')),
+                array('label' => 'Videos', 'url' => array('/Video')),
+                array('label' => 'Catalog', 'url' => array('/Catalog')),
+                array('label' => 'Item', 'url' => array('/Item')),
+            ),
+        ),
+//...
+```
+
+Теперь вполне реально работать над каталогом товаров.
