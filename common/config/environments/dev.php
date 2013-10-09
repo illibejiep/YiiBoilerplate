@@ -21,3 +21,8 @@ function dev_shutdown()
 }
 
 register_shutdown_function('dev_shutdown');
+
+$config['params'] = array(
+    'frontendUrl' => 'http://yii.local',
+    'backendUrl'  => 'https://yii.local',
+);

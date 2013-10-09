@@ -11,10 +11,7 @@ define('VIDEO_URI','/video');
 
 
 $config = array(
-    'params' => array(
-        'frontendUrl' => 'http://yii.local',
-        'backendUrl'  => 'https://yii.local',
-    ),
+
     'import' => array(
         'common.components.interfaces.*',
         'application.controllers.*',
