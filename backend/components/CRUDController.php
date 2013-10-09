@@ -64,7 +64,6 @@ class CRUDController extends Controller
 
 		if(isset($_POST[get_class($model)]))
 		{
-            $model->updateDepends();
             $model = $this->_prepareModel($model);
             if (Yii::app()->getRequest()->isAjaxRequest) {
                 if($model->save())
@@ -114,18 +113,20 @@ class CRUDController extends Controller
         $q = Yii::app()->getRequest()->getPost('q');
         if (Yii::app()->getRequest()->isAjaxRequest && $q) {
 
-            $words = array();
-            foreach (explode(' ',$q) as $word)
-                if ($word)
-                    $words[] = $word;
+            $criteria = array(
+                'condition' => "t.name LIKE :query",
+                'order' => 'name',
+                'limit' => 15,
+                'params' => array('query' => "%$q%"),
+            );
 
-            $list = array();
-            if ($words)
-                $list = ActiveRecord::model($modelClassName)->findAll( array(
-                    'condition' => "to_tsvector('russian', \"name\") @@ to_tsquery('russian', '".join(' & ',$words)."')".(ctype_digit($q)?" OR t.id = $q":''),
-                    'order' => (ctype_digit($q)?"t.id = $q DESC,":'').'name',
-                    'limit' => 15,
-                ));
+            if (ctype_digit($q)) {
+                $criteria['condition'] .= ' OR t.id = :id';
+                $criteria['order'] = 't.id';
+                $criteria['params']['id'] = $q;
+            }
+
+            $list = ActiveRecord::model($modelClassName)->findAll($criteria);
 
             echo json_encode($list);
             Yii::app()->end();
@@ -181,10 +182,9 @@ class CRUDController extends Controller
                 }
                 throw new CException($errmsg,$file->error);
             }
-            var_dump($file->error);exit();
-            if (!$file) {
+
+            if (!$file)
                 throw new СExeption('upload error');
-            }
 
             if ($model->hasAttribute('name'))
                 $model->name = $file->name;
