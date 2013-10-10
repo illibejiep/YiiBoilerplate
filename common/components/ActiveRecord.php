@@ -48,6 +48,14 @@ abstract class ActiveRecord extends CActiveRecord implements JsonSerializable
     }
 
     // ------------------- helpers ----------------------------
+    
+    public function getIdentifier()
+    {
+        if (is_array($this->primaryKey))
+            return join('-',$this->primaryKey);
+
+        return $this->primaryKey;
+    }
     /**
      * @param string $relationName
      * @param bool $asTable
