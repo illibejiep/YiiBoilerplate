@@ -124,8 +124,12 @@ ActiveRecord реализует интерфейс JsonSerializable. Для JSON
 ```
 2. Настраиваем свой вэб-сервер.
 
-3. Прописываем в конфиге свою базу данных и остальные параметры. Например так:
+3. Запускаем скрипт деплоя с нужным окружением.
+```
+    ./runpostdeploy dev
+```
 
+4. Прописываем в конфиге свою базу данных и остальные параметры. Например так:
 ```php
 // in common/config/main-local.php
 $config['components']['db'] = array(
@@ -138,24 +142,17 @@ $config['components']['db'] = array(
     'tablePrefix' => '',
 );
 unset($config['components']['db']['password']);
-
 $config['params'] = array(
     'frontendUrl' => 'http://www.yii.local',
     'backendUrl'  => 'http://admin.yii.local',
 );
-
 ```
 
-
-4. Запускаем скрипт деплоя с нужным окружением.
-```
-    ./runpostdeploy dev
-```
 5. Теперь, если повезло, в бэкэнде можно заливать картинки и видео. А также прикреплять картинки в качестве превью к видео. В фронтэнде ничего интересного.
 
 6. Для примера сделаем каталог товаров.
 
-а. создадим миграции:
+а) создадим миграции:
 ```
     ./yiic migrate create catalog
 ```
@@ -196,7 +193,7 @@ public function safeDown()
 
 ```
 
-b. По адресу {backendUrl}/gii в разделе "GiiyModel Generator" генерим модели. Реализуем в моделях интерфейс Iillustrated
+b) По адресу {backendUrl}/gii в разделе "GiiyModel Generator" генерим модели. Реализуем в моделях интерфейс Iillustrated
 
 ```php
 
@@ -238,7 +235,7 @@ class Item extends BaseItem implements Iillustrated
 
 И сгенерим CRUD-контроллеры в разделе "GiiyCrud Generator".
 
-c. Прописываем новые контроллеры в меню.
+c) Прописываем новые контроллеры в меню.
 
 ```php
 
