@@ -86,37 +86,3 @@ CREATE INDEX user_oauth_user_idx ON user_oauth ( user_id );
 CREATE INDEX user_oauth_service_idx ON user_oauth ( service );
 
 ALTER TABLE user_oauth ADD CONSTRAINT user_oauth_user_id_fkey FOREIGN KEY ( user_id ) REFERENCES "user"( id ) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- pictures
-
-CREATE TABLE picture (
-	id                   serial  NOT NULL,
-	type_enum            integer  ,
-	"name"               text  ,
-	width                integer  ,
-	height               integer  ,
-	created              timestamp  NOT NULL,
-	modified             timestamp DEFAULT now() NOT NULL,
-	description          text  ,
-	announce             text  ,
-	CONSTRAINT pk_picture PRIMARY KEY ( id )
- );
-
--- videos
-CREATE TABLE video (
-	id                   serial  NOT NULL,
-	type_enum            integer  ,
-	"name"               varchar(1024)  ,
-	width                integer  ,
-	height               integer  ,
-	picture_id           integer  ,
-	created              timestamp  NOT NULL,
-	modified             timestamp  NOT NULL,
-	duration             float8  ,
-	bit_rate             integer  ,
-	codec                varchar(1024)  ,
-	description          text  ,
-	CONSTRAINT video_pkey PRIMARY KEY ( id )
- );
-
-ALTER TABLE video ADD CONSTRAINT video_picture_id_fkey FOREIGN KEY ( picture_id ) REFERENCES picture( id ) ON DELETE SET NULL ON UPDATE CASCADE;

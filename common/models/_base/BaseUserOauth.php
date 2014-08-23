@@ -17,8 +17,9 @@
  * @property User $user
  *
  */
-abstract class BaseUserOauth extends ActiveRecord {
-                	public static function model($className=__CLASS__) {
+abstract class BaseUserOauth extends CActiveRecord {
+
+    public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 

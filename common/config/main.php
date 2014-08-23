@@ -36,6 +36,9 @@ $config = array(
         'ext.ffmpeg-php.provider.*',
     ),
     'modules'=>array(
+        'giiy' => array(
+            'tablePrefix' => '',
+        ),
         'user'=>array(
             'tableUsers' => 'user',
             # encrypting method (php hash function)

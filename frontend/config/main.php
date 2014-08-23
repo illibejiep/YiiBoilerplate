@@ -50,7 +50,6 @@ $config = CMap::mergeArray(
                     '<controller:\w+>/<id:\d+>' => '<controller>/view',
                     '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                     '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-                    PIX_URI.'/resize/<id1:\d+>/<id2:\d+>/<width:\d+>x<height:\d+>.<type:\w+>' => 'picture/resize'
                 )
             ),
             'themeManager' => array(

@@ -34,8 +34,8 @@
 		array(
 			'class' => 'bootstrap.widgets.TbMenu',
 			'items' => array(
-				array('label' => 'Pictures', 'url' => array('/Picture')),
-                array('label' => 'Videos', 'url' => array('/Video')),
+				array('label' => 'Pictures', 'url' => array('/giiy/GiiyPicture')),
+                array('label' => 'Videos', 'url' => array('/giiy/GiiyVideo')),
 			),
 		),
 		'<form class="navbar-search pull-left" action="/feature/search"><input type="text" name="query" class="search-query span2" placeholder="Search"></form>',
@@ -48,6 +48,7 @@
                 array('label' => 'System', 'url' => '#', 'items' => array(
                     array('label' => 'Users', 'url' => '/user'),
                     array('label' => 'Rights', 'url' => '/rights'),
+                    array('label' => 'Gii', 'url' => '/gii', 'linkOptions' => array('target' => '_blank')),
                 )),
 			),
 		),
