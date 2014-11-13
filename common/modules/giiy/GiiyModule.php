@@ -13,6 +13,8 @@ class GiiyModule extends CWebModule
 
     public $tablePrefix = '';
 
+    public $useBootstrap = false;
+
     protected function init()
     {
         if (!$this->controllersPath && Yii::app() instanceof CWebApplication)

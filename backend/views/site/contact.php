@@ -21,7 +21,9 @@ $this->breadcrumbs = array(
 
 <div class="form">
 
-	<?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+	<?php
+    /** @var CActiveForm $form */
+    $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'contact-form',
 	'enableClientValidation' => true,
 	'htmlOptions' => array('class' => 'well'),
@@ -35,21 +37,19 @@ $this->breadcrumbs = array(
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<?php echo $form->textFieldRow($model, 'name'); ?>
-	<?php echo $form->textFieldRow($model, 'email'); ?>
-	<?php echo $form->textFieldRow($model, 'subject', array('size' => 60, 'maxlength' => 128)); ?>
-	<?php echo $form->textAreaRow($model, 'body', array('rows' => 6, 'cols' => 50)); ?>
-	<div style="clear:both"></div>
+	<?php echo $form->textField($model, 'name'); ?><br>
+	<?php echo $form->textField($model, 'email'); ?><br>
+	<?php echo $form->textField($model, 'subject', array('size' => 60, 'maxlength' => 128)); ?><br>
+	<?php echo $form->textArea($model, 'body', array('rows' => 6, 'cols' => 50)); ?><br>
+	<div style="clear:both"></div><br>
 	<?php if (CCaptcha::checkRequirements()): ?>
 	<?php $this->widget('CCaptcha'); ?>
-	<?php echo $form->textFieldRow($model, 'verifyCode'); ?>
+	<?php echo $form->textField($model, 'verifyCode'); ?>
 	<p class="help-block">Please, enter the letters as they are shown in the image above. Letters are not
 		case-sensitive</p>
 	<?php endif; ?>
 
 	<div class="form-actions">
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'label' => 'Submit', 'icon' => 'ok'));?>
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'reset', 'label' => 'Reset'));?>
 	</div>
 	<?php $this->endWidget(); ?>
 

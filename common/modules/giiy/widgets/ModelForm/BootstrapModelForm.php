@@ -1,6 +1,7 @@
 <?php
 
-class ModelForm extends CActiveForm
+Yii::import('bootstrap.widgets.*');
+class BootstrapModelForm extends TbActiveForm
 {
     /** @var GiiyActiveRecord */
     public $model;
@@ -8,17 +9,16 @@ class ModelForm extends CActiveForm
 
     public function init()
     {
+        $assets = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/assets');
+        Yii::app()->clientScript->registerScriptFile($assets . '/js/select2ModelForm.js');
+
+        Yii::app()->clientScript->registerPackage('modelForm');
         Yii::app()->clientScript->registerPackage('jquery.ui');
         Yii::app()->clientScript->registerPackage('jquery');
         Yii::app()->clientScript->registerPackage('cookie');
-        Yii::app()->clientScript->registerScript(
-            'modelData',
-            'var modelData = '.json_encode($this->model->toArray()).';',
-            CClientScript::POS_HEAD
-        );
-
-        $assets = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/assets');
-        Yii::app()->clientScript->registerScriptFile($assets . '/js/modelForm.js',CClientScript::POS_END);
+        Yii::app()->clientScript->registerScript('yiiParams','
+            var yiiParams = '.json_encode(Yii::app()->params->toArray()).';
+        ',CClientScript::POS_HEAD);
 
         if (!$this->fromModel && $this->model instanceof IFileBased)
             echo $this->upload('id');
@@ -27,27 +27,44 @@ class ModelForm extends CActiveForm
             $this->htmlOptions['onsubmit'] = 'return modelFormSubmit();';
 
         $this->htmlOptions['isNew'] = (int)!$this->model->id;
-        $this->htmlOptions['class'] = 'modelForm';
 
         parent::init();
     }
 
     public function input($attribute)
     {
-        $html = parent::textField($this->model,$attribute);
-        return $this->wrapField($html,$attribute);
+        $widget = $this->createWidget($this->getInputClassName(),array(
+            'form' => $this,
+            'model' => $this->model,
+            'attribute' => $attribute,
+            'type' => TbInput::TYPE_TEXT
+        ));
+
+        return $this->renderWidget($widget);
     }
 
     public function text($attribute)
     {
-        $html = parent::textArea($this->model,$attribute);
-        return $this->wrapField($html,$attribute);
+        $widget = $this->createWidget($this->getInputClassName(),array(
+            'form' => $this,
+            'model' => $this->model,
+            'attribute' => $attribute,
+            'type' => TbInput::TYPE_TEXTAREA
+        ));
+
+        return $this->renderWidget($widget);
     }
 
     public function check($attribute)
     {
-        $html = parent::checkBox($this->model,$attribute);
-        return $this->wrapField($html,$attribute);
+        $widget = $this->createWidget($this->getInputClassName(),array(
+            'form' => $this,
+            'model' => $this->model,
+            'attribute' => $attribute,
+            'type' => TbInput::TYPE_CHECKBOX
+        ));
+
+        return $this->renderWidget($widget);
     }
 
 
@@ -58,16 +75,19 @@ class ModelForm extends CActiveForm
             'attribute' => $attribute,
         ));
 
-        ob_start();
-        $widget->run();
-        $html = ob_end_flush();
-
-        return $this->wrapField($html,$attribute);
+        return $this->renderWidget($widget);
     }
 
     public function submitButton()
     {
-        return CHtml::submitButton($this->model->id?'Сохранить':'Создать');
+        $widget = $this->createWidget('TbButton',array(
+            'buttonType' => 'submit',
+            'label' => $this->model->id?'Сохранить':'Создать',
+        ));
+
+        ob_start();
+        $widget->run();
+        return '<div>'.ob_get_clean().'</div>';
     }
 
     public function enum($attribute)
@@ -79,10 +99,21 @@ class ModelForm extends CActiveForm
 
         $enumClass .= 'Enum';
 
-        $htmlOptions = array('key' => 'id');
+        $widget = $this->createWidget('TbSelect2',
+        array(
+            'model' => $this->model,
+            'attribute' => $attribute,
+            'data' => $enumClass::$names,
+            'htmlOptions' => array(
+                'key' => 'id',
+            ),
+            'options' => array(
+                'width' => '300px'
+            ),
+        ));
 
         if ($attribute == 'type') {
-            $htmlOptions['onChange'] = '$(this).closest("form").find(".typeEnumerable").hide();'.
+            $widget->htmlOptions['onChange'] = '$(this).closest("form").find(".typeEnumerable").hide();'.
                 '$(this).closest("form").find(".typeEnumerable").closest("fieldset").hide();'.
                 '$(this).closest("form").find(".typeEnumerable_" + $(this).val()).show();'.
                 '$(this).closest("form").find(".typeEnumerable_" + $(this).val()).closest("fieldset").show();';
@@ -92,16 +123,12 @@ class ModelForm extends CActiveForm
                     $(this).change();
                 });
             ',CClientScript::POS_LOAD);
+            ob_start();
+            $widget->run();
+            return ob_get_clean();
         }
 
-        $html = parent::dropDownList(
-            $this->model,
-            $attribute,
-            $enumClass::$names,
-            $htmlOptions
-        );
-
-        return $html;
+        return $this->renderWidget($widget);
     }
 
     public function params()
@@ -338,18 +365,59 @@ class ModelForm extends CActiveForm
         $isMultiple = $relation[0] == CActiveRecord::HAS_MANY || $relation[0] == CActiveRecord::MANY_MANY;
         $isFileBased = GiiyActiveRecord::model($relationModel) instanceof IFileBased;
 
-        $relationList = $this->model->getRelationNames($relationName);
+        if ($this->fromModel == $relationModel)
+            return '';
+        $value = join(',', $this->model->getRelationIds($relationName));
 
-        $html = $this->render('giiy.widgets.ModelForm.views.relationField',array(
-            'relationName' => $relationName,
-            'relationModel' => $relationModel,
-            'relationList' => $relationList,
-            'isMultiple' => $isMultiple,
-            'isFileBased' => $isFileBased,
-            'model' => $this->model,
-        ),true);
+        $formatSelectionFn = $isFileBased?'js:formatSelectionUpload':'js:formatSelection';
+        if ($this->fromModel)
+            $formatSelectionFn = 'js:formatSelectionSubform';
 
-        return $this->wrapField($html,$relationName);
+        $widget = $this->createWidget('TbSelect2', array(
+            'form' => $this,
+            'model' =>$this->model,
+            'attribute' => $relationName,
+            'value' => ' ',
+            'htmlOptions' => array(
+                'value' => $value,
+                'relationName' => $relationName,
+                'isMultiple' => $isMultiple,
+            ),
+            'asDropDownList' => false,
+            'options' => array(
+                'width' => $this->fromModel?'300px':'665px',
+                'multiple' => true,
+                'placeholder' => 'Выберите ' . $this->model->getAttributeLabel($relationName),
+                'minimumInputLength' => 1,
+                'ajax' => array(
+                    'url' => '/' . strtolower($relationModel),
+                    'dataType' => 'json',
+                    'type' => 'POST',
+                    'data' => 'js: function(term,page) { return {q: term}; }',
+                    'results' => 'js: function(data,page) { return {results: data}; }',
+                ),
+                'formatSelection' => $formatSelectionFn,
+                'formatResult' => 'js:formatResult',
+                'initSelection' => 'js:initSelection',
+            ),
+        ));
+
+        if ($isFileBased)
+            Yii::app()->bootstrap->registerAssetJs('fileupload/jquery.fileupload.js');
+
+        Yii::app()->clientScript->registerScript('initModelData','
+            var modelData = Array();
+        ',CClientScript::POS_HEAD);
+
+        Yii::app()->clientScript->registerScript($relationName.'ModelData','
+            modelData["'.$relationName.'"] = '.json_encode($this->model->getRelationNames($relationName,true)).';
+        ',CClientScript::POS_HEAD);
+
+        Yii::app()->clientScript->registerScript('ModelData','
+            modelData["_modelName"] = "'.get_class($this->model).'";
+        ',CClientScript::POS_HEAD);
+
+        return $this->renderWidget($widget);
     }
 
     public function relationForm($relationName)
@@ -421,24 +489,32 @@ class ModelForm extends CActiveForm
         return $this->renderWidget($widget);
     }
 
-    public function wrapField($html,$attribute)
+    public function renderWidget($widget)
     {
+        ob_start();
+        if ($widget instanceof TbSelect2
+            OR $widget instanceof TbDatePicker
+            OR $widget instanceof TbTimePicker
+            OR $widget instanceof CJuiDateTimePicker
+        )
+            echo $this->label($this->model,$widget->attribute,$widget->htmlOptions);
+
+        $widget->run();
+        $html = ob_get_clean();
 
         if ($this->model instanceof ITypeEnumerable
-            && $attribute !== $this->model->tableSchema->primaryKey) {
-
+            && $widget->attribute !== $this->model->tableSchema->primaryKey) {
             $classes = array('typeEnumerable');
             $hidden = true;
-
             foreach ($this->model->getTypesFields() as $type_id => $fields) {
-                if (in_array($attribute,$fields)) {
+                if (in_array($widget->attribute,$fields)) {
                     $classes[] = 'typeEnumerable_'.$type_id;
                     if ($this->model->getType() && $this->model->getType()->id == $type_id)
                         $hidden = false;
                 }
             }
 
-            $html = '<div name="'.$attribute.'" class="'.join(' ',$classes).'" ' .($hidden?'style="display:none" ':'').'>'.$html.'</div>';
+            $html = '<div name="'.$widget->attribute.'" class="'.join(' ',$classes).'" ' .($hidden?'style="display:none" ':'').'>'.$html.'</div>';
         }
         return $html;
     }

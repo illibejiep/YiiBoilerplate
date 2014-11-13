@@ -9,7 +9,6 @@
 
 class SiteController extends Controller
 {
-    public $layout = '//main';
 	/**
 	 * @return array list of action filters (See CController::filter)
 	 */

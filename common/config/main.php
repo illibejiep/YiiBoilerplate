@@ -77,6 +77,9 @@ $config = array(
         ),
     ),
     'components' => array(
+        'assetManager'=>array(
+            'linkAssets' => true,
+        ),
         'user'=>array(
             'class'=>'RWebUser',
             // enable cookie-based authentication
@@ -88,7 +91,10 @@ $config = array(
             'defaultRoles' => array('Guest')
         ),
         'db' => array(
-            'charset' => 'utf8'
+            'connectionString' => 'mysql:dbname=yii;host=127.0.0.1',
+            'charset' => 'utf8',
+            'user' => 'root',
+            'password' => 'root',
         ),
         'urlManager' => array(
             'urlFormat' => 'path',

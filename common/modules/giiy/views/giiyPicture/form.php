@@ -1,4 +1,4 @@
-<? $form = $this->beginWidget('ModelForm',array('model'=>$model,'fromModel' => isset($fromModel)?$fromModel:null)); ?>
+<? $form = $this->beginWidget(Yii::app()->getModule('giiy')->useBootstrap?'BootstrapModelForm':'ModelForm',array('model'=>$model,'fromModel' => isset($fromModel)?$fromModel:null)); ?>
 
 <div>
     <?=$form->errorSummary($form->model);?>

@@ -52,10 +52,10 @@ $config = CMap::mergeArray(
         ),
         'components' => array(
             /* load bootstrap components */
-            'bootstrap' => array(
-                'class' => 'ext.bootstrap.components.Bootstrap',
-                'responsiveCss' => true,
-            ),
+            //'bootstrap' => array(
+            //    'class' => 'ext.bootstrap.components.Bootstrap',
+            //    'responsiveCss' => true,
+            //),
             'errorHandler' => array(
                 // @see http://www.yiiframework.com/doc/api/1.1/CErrorHandler#errorAction-detail
                 'errorAction'=>'site/error'
@@ -77,15 +77,6 @@ $config = CMap::mergeArray(
                 'class' => 'ext.jformvalidate.EJFValidate',
                 'enable' => true
             ),
-            'clientScript'=>array(
-                'packages' => array(
-                    'modelForm' => array(
-                        'basePath' => 'application.widgets.js',
-                        'js'=>array('modelForm.js'),
-                    )
-                ),
-            ),
-
         ),
     )
 );

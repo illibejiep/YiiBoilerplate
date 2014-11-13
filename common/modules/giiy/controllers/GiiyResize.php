@@ -4,8 +4,8 @@ Yii::app()->getModule('giiy');
 class GiiyResizeController extends Controller
 {
     /**
-     * rote pattern:
-     * GiiyModule::$pixUrl.'/resize/<id1:\d+>/<id2:\d+>/<width:\d+>x<height:\d+>.<type:\w+>'
+     * rote pattern example:
+     * GiiyModule::$pixUrl.'/resize/<id1:\d+>/<id2:\d+>/<width:\d+>x<height:\d+>.<type:\w+>' => 'giiy/giiyResize/resize'
      *
      * @param $id1
      * @param $id2

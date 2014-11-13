@@ -61,9 +61,15 @@ class ModelFileUpload extends CWidget
 	 */
 	public function registerClientScript()
 	{
-		// Upgrade widget factory
-		Yii::app()->bootstrap->registerAssetJs('fileupload/vendor/jquery.ui.widget.js');
-		Yii::app()->bootstrap->registerAssetJs('fileupload/jquery.iframe-transport.js');
-		Yii::app()->bootstrap->registerAssetJs('fileupload/jquery.fileupload.js');
+        if (Yii::app()->getModule('giiy')->useBootstrap) {
+            Yii::app()->bootstrap->registerAssetJs('fileupload/vendor/jquery.ui.widget.js');
+            Yii::app()->bootstrap->registerAssetJs('fileupload/jquery.iframe-transport.js');
+            Yii::app()->bootstrap->registerAssetJs('fileupload/jquery.fileupload.js');
+        } else {
+            $assets = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/assets');
+            Yii::app()->clientScript->registerScriptFile($assets . '/fileupload/vendor/jquery.ui.widget.js');
+            Yii::app()->clientScript->registerScriptFile($assets . '/fileupload/jquery.iframe-transport.js');
+            Yii::app()->clientScript->registerScriptFile($assets . '/fileupload/jquery.fileupload.js');
+        }
 	}
 }
