@@ -4,7 +4,7 @@ Yii::import('gii.generators.crud.CrudGenerator');
 
 class GiiyCrudGenerator extends CrudGenerator
 {
-	public $codeModel = 'giiy.giiyCrud.GiiyCrudCode';
+	public $codeModel = 'giiy.generators.giiyCrud.GiiyCrudCode';
     public $giiyModule;
 
     public function init()

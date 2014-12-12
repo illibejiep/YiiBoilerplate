@@ -40,9 +40,9 @@ $config = CMap::mergeArray(
             // uncomment the following to enable the Gii tool
             'gii'=>array(
                 'class'=>'system.gii.GiiModule',
-                'password'=>'verySecretPassword',
+                'password'=>'asdf',
                 'generatorPaths'=>array(
-                    'giiy'
+                    'giiy.generators'
                 ),
                 // If removed, Gii defaults to localhost only. Edit carefully to taste.
                 'ipFilters'=>array('127.0.0.1','::1'),
@@ -52,10 +52,10 @@ $config = CMap::mergeArray(
         ),
         'components' => array(
             /* load bootstrap components */
-            //'bootstrap' => array(
-            //    'class' => 'ext.bootstrap.components.Bootstrap',
-            //    'responsiveCss' => true,
-            //),
+            'bootstrap' => array(
+                'class' => 'ext.bootstrap.components.Bootstrap',
+                'responsiveCss' => true,
+            ),
             'errorHandler' => array(
                 // @see http://www.yiiframework.com/doc/api/1.1/CErrorHandler#errorAction-detail
                 'errorAction'=>'site/error'

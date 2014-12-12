@@ -9,7 +9,7 @@ class GiiyModule extends CWebModule
     public static $videoUrl = '/video';
 
     public $controllersPath;
-    public $modelsPath;
+    public $modelsPaths = array();
 
     public $tablePrefix = '';
 
@@ -20,8 +20,8 @@ class GiiyModule extends CWebModule
         if (!$this->controllersPath && Yii::app() instanceof CWebApplication)
             $this->controllersPath = Yii::app()->getControllerPath();
 
-        if (!$this->modelsPath)
-            $this->modelsPath = Yii::getPathOfAlias('application.models');
+        if (!$this->modelsPaths)
+            $this->modelsPaths = array(Yii::getPathOfAlias('application.models'));
 
         if (!self::$pixPath &&  Yii::getPathOfAlias('webroot'))
             self::$pixPath = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'pix';

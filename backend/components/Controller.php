@@ -10,7 +10,7 @@ class Controller extends RController {
 
 	public $breadcrumbs = array();
 	public $menu = array();
-    public $layout='//noBootstrap';
+    public $layout='//main';
 
     public function filters()
     {
