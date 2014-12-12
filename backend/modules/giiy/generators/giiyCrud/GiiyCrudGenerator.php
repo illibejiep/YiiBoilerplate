@@ -5,6 +5,7 @@ Yii::import('gii.generators.crud.CrudGenerator');
 class GiiyCrudGenerator extends CrudGenerator
 {
 	public $codeModel = 'giiy.generators.giiyCrud.GiiyCrudCode';
+    /** @var  GiiyModule */
     public $giiyModule;
 
     public function init()
@@ -16,14 +17,16 @@ class GiiyCrudGenerator extends CrudGenerator
     protected function getModels() {
 
         $models = array();
-        $files = scandir(Yii::getPathOfAlias('application.models'));
-        foreach ($files as $file) {
-            if ($file[0] !== '.' && CFileHelper::getExtension($file) === 'php') {
-                $fileClassName = substr($file, 0, strpos($file, '.'));
-                if (class_exists($fileClassName) && is_subclass_of($fileClassName, 'GiiyActiveRecord')) {
-                    $fileClass = new ReflectionClass($fileClassName);
-                    if (!$fileClass->isAbstract() && !is_array(GiiyActiveRecord::model($fileClassName)->getPrimaryKey()))
-                        $models[] = $fileClassName;
+        foreach ($this->giiyModule->modelsPaths as $modelsPath) {
+            $files = scandir(Yii::getPathOfAlias($modelsPath));
+            foreach ($files as $file) {
+                if ($file[0] !== '.' && CFileHelper::getExtension($file) === 'php') {
+                    $fileClassName = substr($file, 0, strpos($file, '.'));
+                    if (class_exists($fileClassName) && is_subclass_of($fileClassName, 'GiiyActiveRecord')) {
+                        $fileClass = new ReflectionClass($fileClassName);
+                        if (!$fileClass->isAbstract() && !is_array(GiiyActiveRecord::model($fileClassName)->getPrimaryKey()))
+                            $models[] = $fileClassName;
+                    }
                 }
             }
         }

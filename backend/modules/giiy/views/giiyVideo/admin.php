@@ -15,8 +15,8 @@ $this->menu=array(
 <?
 
 if (Yii::app()->getModule('giiy')->useBootstrap)
-    require ('_bootstrapGrid.php');
+    require('_bootstrapGrid.php');
 else
-    require ('_grid.php');
+    require('_grid.php');
 
 ?>

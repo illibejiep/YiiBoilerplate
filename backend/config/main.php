@@ -49,6 +49,13 @@ $config = CMap::mergeArray(
                 'newFileMode'=>0666,
                 'newDirMode'=>0777,
             ),
+            'giiy' => array(
+                'modelsPaths' => array(
+                    'common.models',
+                    'backend.models',
+                    'frontend.models',
+                )
+            )
         ),
         'components' => array(
             /* load bootstrap components */
@@ -75,8 +82,7 @@ $config = CMap::mergeArray(
             ),
             'jformvalidate' => array (
                 'class' => 'ext.jformvalidate.EJFValidate',
-                'enable' => true
-            ),
+                'enable' => true,            ),
         ),
     )
 );

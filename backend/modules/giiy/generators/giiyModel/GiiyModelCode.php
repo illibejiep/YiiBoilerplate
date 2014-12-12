@@ -35,6 +35,16 @@ class GiiyModelCode extends ModelCode {
     /** @var array */
     public $tables = array();
 
+    /** @var  GiiyModule */
+    public $giiyModule;
+
+    public function init()
+    {
+        $this->giiyModule = Yii::app()->getModule('giiy');
+        $this->modelPath = $this->giiyModule->modelsPaths[0];
+        parent::init();
+    }
+
     public function rules()
     {
         return array(

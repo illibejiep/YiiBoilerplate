@@ -13,7 +13,7 @@ class GiiyModule extends CWebModule
 
     public $tablePrefix = '';
 
-    public $useBootstrap = false;
+    public $useBootstrap = true;
 
     protected function init()
     {

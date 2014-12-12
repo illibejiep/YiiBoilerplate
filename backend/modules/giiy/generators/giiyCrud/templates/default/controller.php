@@ -5,7 +5,7 @@
  */
 ?>
 <?="<?\n"; ?>
-
+Yii::app()->getModule('giiy');
 class <?=$this->controllerClass; ?> extends GiiyCRUDController
 {
 

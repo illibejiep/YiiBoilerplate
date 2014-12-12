@@ -1,5 +1,5 @@
 <?="<?";?>
- $form = $this->beginWidget('ModelForm',array('model'=>$model,'fromModel' => isset($fromModel)?$fromModel:null)); <?="?>";?>
+ $form = $this->beginWidget('BootstrapModelForm',array('model'=>$model,'fromModel' => isset($fromModel)?$fromModel:null)); <?="?>";?>
 <div>
     <?='<?=$form->errorSummary($form->model);?>';?>
 </div>
